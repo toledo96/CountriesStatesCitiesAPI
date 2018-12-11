@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	 <title>SignUp Template for Bootstrap </title>
+     <script type="text/javascript" src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+     <!--<script type="text/javascript" src="{{url_for('static', filename='js/hola.js')}}"></script>-->
+    <script>
+
+        $(document).ready(function(){
+            $('#select_1').append($('<option value=0>Selecciona un pais</option>'));
+            $('#select_2').append($('<option value=0>Selecciona un estado</option>'));
+            $('#select_3').append($('<option value=0>Selecciona una ciudad</option>'));
+            var id2;
+            $.getJSON("http://127.0.0.1:5000/api/v1/contries",function (datos) {
+                $.each(datos, function (index, value) {
+                    string = value;
+                    array = string.toString().split(',');
+                    index = index+1;
+                     $('#select_1').append($('<option value='+index+'>'+array[1]+'</option>'));
+                     console.log($('#select_1').val());
+                });
+            })
+
+            states();
+            cities();
+
+            function states() {
+                $("#select_1").on("change",function () {
+                    id = $("#select_1").val();
+                    $('#select_2').empty();
+                    $.getJSON("http://127.0.0.1:5000/api/v1/contries/"+id+"/states",function (datos) {
+                        $.each(datos, function (index, value) {
+                            string = value;
+                            //index = index-1;
+                            array = string.toString().split(',');
+                            $('#select_2').append($('<option value='+array[0]+'>'+array[1]+'</option>'))
+                            //id2 = $('#select_2').val();
+                            console.log(id);
+                        });
+                    })
+                })
+            }
+
+            function cities(){
+                <!-- El problema es que toma la posicion de en el comboBOx com el state_id-->
+                $("#select_2").on("change",function () {
+                    id = $("#select_2").val();
+                    //nombre_estado = $('select[name="select_2"] option:selected').text();
+                    $('#select_3').empty();
+                    $.getJSON("http://127.0.0.1:5000/api/v1/states/"+id+"/cities",function (datos) {
+                        $.each(datos,function(index,value){
+                            string = value;
+                            array = string.toString().split(',');
+                            $('#select_3').append($('<option value='+array[0]+'>'+array[1]+'</option>'))
+                            console.log(id);
+                        });
+                    })
+                })
+            }
+
+
+
+        });
+    </script>
+</head>
+
+<body>
+
+    <select id="select_1" name="select_1">
+
+    </select>
+
+    <select id="select_2" name="select_2">
+
+    </select>
+
+    <select id="select_3" name="select_3">
+
+    </select>
+
+</body>
+
+</html>
